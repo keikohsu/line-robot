@@ -1,23 +1,24 @@
-// 引用 line機器人套件
+// 引用 line 機器人套件
 import linebot from 'linebot'
-
-// 引用 dotenv套件
+// 引用 dotenv 套件
 import dotenv from 'dotenv'
 // 引用 axios 套件
 import axios from 'axios'
 // 引用 node-schedule
 import schedule from 'node-schedule'
-let exhibitions = []
+
+let exhubitions = []
 
 const updateData = async () => {
   const response = await axios.get('https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6')
-  exhibitions = response.data
+  exhubitions = response.data
 }
 schedule.scheduleJob('* * 0 * * *', () => {
   updateData()
 })
 
 updateData()
+
 // 讀取 .env
 dotenv.config()
 
@@ -28,25 +29,10 @@ const bot = linebot({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
 })
 
-// 宣告filter 函式
-// const filter = (str, data) => {
-//   const result = [] // result 儲存filter 的東西
-//   for (const d of data) { // for of 跑API.data 的json 資料
-//     if (d.TR_POSITION == null) continue // 空值要跳過，不然程式會抓不到；若if () 後面只有一行，可不用加大括號 {}
-//     else if (d.TR_POSITION.includes(str)) {
-//       result.push(d) // 篩出position 包含str 的資料，整包json push 到result 陣列
-//     } else if (d.TR_CNAME.includes(str)) {
-//       result.push(d)
-//     }
-//   } return result
-// }
 bot.on('message', async event => {
-  const reply2 = []
   try {
     let reply
-    let str = ''
     const text = event.message.text
-
     if (text === 'flex') {
       reply = {
         type: 'flex',
@@ -208,18 +194,16 @@ bot.on('message', async event => {
         }
       }
     } else {
-      for (const dd of exhibitions) {
-        if (text.includes(dd.showInfo[0].location.slice(0, 2)) && text.includes(dd.showInfo[0].category)) {
-          str += '地點' + dd.showInfo[0].locationName + '\n' + '日期' + dd.showInfo[0].endTime + '\n'
-          console.log(str)
+      for (const data of exhubitions) {
+        if (data.title === text) {
+          reply = data.showInfo[0].locationName
+          break
         }
       }
-      reply = (str.length === 0) ? '找不到資料' : str
+      reply = (reply.length === 0) ? '找不到資料' : reply
     }
-
     event.reply(reply)
   } catch (error) {
-    console.log(error)
     event.reply('發生錯誤')
   }
 })
