@@ -6,18 +6,12 @@ import dotenv from 'dotenv'
 // 引用 axios 套件
 import axios from 'axios'
 // 引用 node-schedule
-import schedule from 'node-schedule'
+// import schedule from 'node-schedule'
 let exhibitions = []
+// schedule.scheduleJob('* * 0 * * *', () => {
+//   updateData()
+// })
 
-const updateData = async () => {
-  const response = await axios.get('https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6')
-  exhibitions = response.data
-}
-schedule.scheduleJob('* * 0 * * *', () => {
-  updateData()
-})
-
-updateData()
 // 讀取 .env
 dotenv.config()
 
@@ -40,14 +34,22 @@ const bot = linebot({
 //     }
 //   } return result
 // }
+
+let num = 0
 bot.on('message', async event => {
-  const reply2 = []
+  // const reply2 = []
   try {
     let reply
     let str = ''
     const text = event.message.text
-
-    if (text === 'flex') {
+    if (text === '1' || text === '2' || text === '3' || text === '4' || text === '5' || text === '6' || text === '7' || text === '8' || text === '11' || text === '13' || text === '14' || text === '15' || text === '17' || text === '19') {
+      num = text
+      reply = '請輸入城市'
+      event.reply(reply)
+      console.log(num)
+      console.log(text)
+    }
+    else if (text === 'flex') {
       reply = {
         type: 'flex',
         altText: 'Flex',
@@ -58,9 +60,9 @@ bot.on('message', async event => {
               type: 'bubble',
               hero: {
                 type: 'image',
-                url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png',
+                url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_2_restaurant.png',
                 size: 'full',
-                aspectRatio: '20:13',
+                aspectRatio: '20:8',
                 aspectMode: 'cover',
                 action: {
                   type: 'uri',
@@ -70,106 +72,13 @@ bot.on('message', async event => {
               body: {
                 type: 'box',
                 layout: 'vertical',
-                contents: [
-                  {
-                    type: 'text',
-                    text: 'Brown Cafe',
-                    weight: 'bold',
-                    size: 'xl'
-                  },
-                  {
-                    type: 'box',
-                    layout: 'baseline',
-                    margin: 'md',
-                    contents: [
-                      {
-                        type: 'icon',
-                        size: 'sm',
-                        url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                      },
-                      {
-                        type: 'icon',
-                        size: 'sm',
-                        url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                      },
-                      {
-                        type: 'icon',
-                        size: 'sm',
-                        url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                      },
-                      {
-                        type: 'icon',
-                        size: 'sm',
-                        url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                      },
-                      {
-                        type: 'icon',
-                        size: 'sm',
-                        url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png'
-                      },
-                      {
-                        type: 'text',
-                        text: '4.0',
-                        size: 'sm',
-                        color: '#999999',
-                        margin: 'md',
-                        flex: 0
-                      }
-                    ]
-                  },
-                  {
-                    type: 'box',
-                    layout: 'vertical',
-                    margin: 'lg',
-                    spacing: 'sm',
-                    contents: [
-                      {
-                        type: 'box',
-                        layout: 'baseline',
-                        spacing: 'sm',
-                        contents: [
-                          {
-                            type: 'text',
-                            text: 'Place',
-                            color: '#aaaaaa',
-                            size: 'sm',
-                            flex: 1
-                          },
-                          {
-                            type: 'text',
-                            text: 'Miraina Tower, 4-1-6 Shinjuku, Tokyo',
-                            wrap: true,
-                            color: '#666666',
-                            size: 'sm',
-                            flex: 5
-                          }
-                        ]
-                      },
-                      {
-                        type: 'box',
-                        layout: 'baseline',
-                        spacing: 'sm',
-                        contents: [
-                          {
-                            type: 'text',
-                            text: 'Time',
-                            color: '#aaaaaa',
-                            size: 'sm',
-                            flex: 1
-                          },
-                          {
-                            type: 'text',
-                            text: '10:00 - 23:00',
-                            wrap: true,
-                            color: '#666666',
-                            size: 'sm',
-                            flex: 5
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
+                spacing: 'md',
+                contents: [],
+                action: {
+                  type: 'uri',
+                  label: 'action',
+                  uri: 'http://linecorp.com/'
+                }
               },
               footer: {
                 type: 'box',
@@ -208,16 +117,30 @@ bot.on('message', async event => {
         }
       }
     } else {
-      for (const dd of exhibitions) {
-        if (text.includes(dd.showInfo[0].location.slice(0, 2)) && text.includes(dd.showInfo[0].category)) {
-          str += '地點' + dd.showInfo[0].locationName + '\n' + '日期' + dd.showInfo[0].endTime + '\n'
-          console.log(str)
+      const updateData = async (event) => {
+        try {
+          const response = await axios.get(`https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=${num}`)
+          exhibitions = response.data
+          for (const dd of exhibitions) {
+            if (!dd.showInfo[0]) return
+            if (text.includes(dd.showInfo[0].location.slice(0, 2))) {
+              str += '主題名稱:' + dd.title + '。' + '\n'
+              str += '地點名稱:' + dd.showInfo[0].locationName + '。' + '\n'
+            }
+          }
+          str.length === 0 ? reply = '找不到資料' : reply = str
+          // reply = (str.length === 0) ? '找不到資料2' : str
+          console.log(reply)
+          event.reply(reply)
+        }
+        catch (error) {
+          console.log(error)
         }
       }
-      reply = (str.length === 0) ? '找不到資料' : str
+      updateData(event)
     }
 
-    event.reply(reply)
+    console.log(str)
   } catch (error) {
     console.log(error)
     event.reply('發生錯誤')
