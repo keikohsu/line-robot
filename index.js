@@ -7,7 +7,6 @@ import dotenv from 'dotenv'
 import axios from 'axios'
 // 引用 node-schedule
 // import schedule from 'node-schedule'
-let exhibitions = []
 // schedule.scheduleJob('* * 0 * * *', () => {
 //   updateData()
 // })
@@ -35,12 +34,15 @@ const bot = linebot({
 //   } return result
 // }
 
+// 使用者
+
 let num = 0
 bot.on('message', async event => {
   // const reply2 = []
   try {
+    let exhibitions = []
     let reply
-    let str = ''
+    // let str = ''
     const text = event.message.text
     if (text === '1' || text === '2' || text === '3' || text === '4' || text === '5' || text === '6' || text === '7' || text === '8' || text === '11' || text === '13' || text === '14' || text === '15' || text === '17' || text === '19') {
       num = text
@@ -49,86 +51,196 @@ bot.on('message', async event => {
       console.log(num)
       console.log(text)
     }
-    else if (text === 'flex') {
-      reply = {
-        type: 'flex',
-        altText: 'Flex',
-        contents: {
-          type: 'carousel',
-          contents: [
-            {
-              type: 'bubble',
-              hero: {
-                type: 'image',
-                url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_2_restaurant.png',
-                size: 'full',
-                aspectRatio: '20:8',
-                aspectMode: 'cover',
-                action: {
-                  type: 'uri',
-                  uri: 'http://linecorp.com/'
-                }
-              },
-              body: {
-                type: 'box',
-                layout: 'vertical',
-                spacing: 'md',
-                contents: [],
-                action: {
-                  type: 'uri',
-                  label: 'action',
-                  uri: 'http://linecorp.com/'
-                }
-              },
-              footer: {
-                type: 'box',
-                layout: 'vertical',
-                spacing: 'sm',
-                contents: [
-                  {
-                    type: 'button',
-                    style: 'link',
-                    height: 'sm',
-                    action: {
-                      type: 'uri',
-                      label: 'CALL',
-                      uri: 'https://linecorp.com'
-                    }
-                  },
-                  {
-                    type: 'button',
-                    style: 'link',
-                    height: 'sm',
-                    action: {
-                      type: 'uri',
-                      label: 'WEBSITE',
-                      uri: 'https://linecorp.com'
-                    }
-                  },
-                  {
-                    type: 'spacer',
-                    size: 'sm'
-                  }
-                ],
-                flex: 0
-              }
-            }
-          ]
-        }
-      }
-    } else {
+    else {
       const updateData = async (event) => {
         try {
           const response = await axios.get(`https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=${num}`)
           exhibitions = response.data
+          // 展覽名稱
+          let title = ''
+          let location = ''
+          let time = ''
+          let info = []
           for (const dd of exhibitions) {
             if (!dd.showInfo[0]) return
-            if (text.includes(dd.showInfo[0].location.slice(0, 2))) {
-              str += '主題名稱:' + dd.title + '。' + '\n'
-              str += '地點名稱:' + dd.showInfo[0].locationName + '。' + '\n'
+            if (dd.showInfo[0].location.includes(text)) {
+              // reply2.push()
+              // if (info.length > 9) return
+              title = dd.title
+              location = dd.showInfo[0].locationName + '。'
+              time = '結束時間:' + dd.showInfo[0].endTime + '。'
+              if (info.length < 9) {
+                info.push({ title: title, location: location, time: time })
+              }
+              // console.log(info.length)
+              // 改過要測試
             }
           }
-          str.length === 0 ? reply = '找不到資料' : reply = str
+          console.log(info[0])
+          if (info.length === 0) {
+            reply = '找不到資料'
+          } else {
+            reply = {
+              type: 'flex',
+              altText: 'Flex',
+              contents: {
+                type: 'carousel',
+                // flex 內容開始
+                contents: [
+                  {
+                    type: 'bubble',
+                    hero: {
+                      type: 'image',
+                      url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png',
+                      size: 'full',
+                      aspectRatio: '20:13',
+                      aspectMode: 'cover',
+                      action: {
+                        type: 'uri',
+                        uri: 'http://linecorp.com/'
+                      }
+                    },
+                    body: {
+                      type: 'box',
+                      layout: 'vertical',
+                      contents: [
+                        {
+                          type: 'text',
+                          text: info[0].title,
+                          weight: 'bold',
+                          size: 'xl'
+                        },
+                        {
+                          type: 'box',
+                          layout: 'baseline',
+                          margin: 'md',
+                          contents: [
+                            {
+                              type: 'icon',
+                              size: 'sm',
+                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+                            },
+                            {
+                              type: 'icon',
+                              size: 'sm',
+                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+                            },
+                            {
+                              type: 'icon',
+                              size: 'sm',
+                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+                            },
+                            {
+                              type: 'icon',
+                              size: 'sm',
+                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+                            },
+                            {
+                              type: 'icon',
+                              size: 'sm',
+                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png'
+                            },
+                            {
+                              type: 'text',
+                              text: '4.0',
+                              size: 'sm',
+                              color: '#999999',
+                              margin: 'md',
+                              flex: 0
+                            }
+                          ]
+                        },
+                        {
+                          type: 'box',
+                          layout: 'vertical',
+                          margin: 'lg',
+                          spacing: 'sm',
+                          contents: [
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: 'Place',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[0].location,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: 'Time',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: '10:00 - 23:00',
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    footer: {
+                      type: 'box',
+                      layout: 'vertical',
+                      spacing: 'sm',
+                      contents: [
+                        {
+                          type: 'button',
+                          style: 'link',
+                          height: 'sm',
+                          action: {
+                            type: 'uri',
+                            label: 'CALL',
+                            uri: 'https://linecorp.com'
+                          }
+                        },
+                        {
+                          type: 'button',
+                          style: 'link',
+                          height: 'sm',
+                          action: {
+                            type: 'uri',
+                            label: 'WEBSITE',
+                            uri: 'https://linecorp.com'
+                          }
+                        },
+                        {
+                          type: 'spacer',
+                          size: 'sm'
+                        }
+                      ],
+                      flex: 0
+                    }
+                  }
+                ]
+              }
+            }
+          }
           // reply = (str.length === 0) ? '找不到資料2' : str
           console.log(reply)
           event.reply(reply)
@@ -138,9 +250,181 @@ bot.on('message', async event => {
         }
       }
       updateData(event)
-    }
 
-    console.log(str)
+      // const flex = {
+      //   type: 'flex',
+      //   altText: `查詢 ${event} 的結果`,
+      //   contents: {
+      //     type: 'carousel',
+      //     contents: []
+      //   }
+      // }
+      // flex.contents.contents.push({
+      //   title: exhibitions.showInfo[0].title
+      // time: exhibitions.showInfo[0].time,
+      // endTime: exhibitions.showInfo[0].endTime
+      // })
+      // reply = {
+      //   type: 'flex',
+      //   altText: 'Flex',
+      //   contents: {
+      //     type: 'carousel',
+      //     contents: [
+      //       {
+      //         type: 'bubble',
+      //         hero: {
+      //           type: 'image',
+      //           url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png',
+      //           size: 'full',
+      //           aspectRatio: '20:13',
+      //           aspectMode: 'cover',
+      //           action: {
+      //             type: 'uri',
+      //             uri: 'http://linecorp.com/'
+      //           }
+      //         },
+      //         body: {
+      //           type: 'box',
+      //           layout: 'vertical',
+      //           contents: [
+      //             {
+      //               type: 'text',
+      //               text: 'Brown Cafe',
+      //               weight: 'bold',
+      //               size: 'xl'
+      //             },
+      //             {
+      //               type: 'box',
+      //               layout: 'baseline',
+      //               margin: 'md',
+      //               contents: [
+      //                 {
+      //                   type: 'icon',
+      //                   size: 'sm',
+      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+      //                 },
+      //                 {
+      //                   type: 'icon',
+      //                   size: 'sm',
+      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+      //                 },
+      //                 {
+      //                   type: 'icon',
+      //                   size: 'sm',
+      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+      //                 },
+      //                 {
+      //                   type: 'icon',
+      //                   size: 'sm',
+      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
+      //                 },
+      //                 {
+      //                   type: 'icon',
+      //                   size: 'sm',
+      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png'
+      //                 },
+      //                 {
+      //                   type: 'text',
+      //                   text: '4.0',
+      //                   size: 'sm',
+      //                   color: '#999999',
+      //                   margin: 'md',
+      //                   flex: 0
+      //                 }
+      //               ]
+      //             },
+      //             {
+      //               type: 'box',
+      //               layout: 'vertical',
+      //               margin: 'lg',
+      //               spacing: 'sm',
+      //               contents: [
+      //                 {
+      //                   type: 'box',
+      //                   layout: 'baseline',
+      //                   spacing: 'sm',
+      //                   contents: [
+      //                     {
+      //                       type: 'text',
+      //                       text: 'Place',
+      //                       color: '#aaaaaa',
+      //                       size: 'sm',
+      //                       flex: 1
+      //                     },
+      //                     {
+      //                       type: 'text',
+      //                       text: 'Miraina Tower, 4-1-6 Shinjuku, Tokyo',
+      //                       wrap: true,
+      //                       color: '#666666',
+      //                       size: 'sm',
+      //                       flex: 5
+      //                     }
+      //                   ]
+      //                 },
+      //                 {
+      //                   type: 'box',
+      //                   layout: 'baseline',
+      //                   spacing: 'sm',
+      //                   contents: [
+      //                     {
+      //                       type: 'text',
+      //                       text: 'Time',
+      //                       color: '#aaaaaa',
+      //                       size: 'sm',
+      //                       flex: 1
+      //                     },
+      //                     {
+      //                       type: 'text',
+      //                       text: '10:00 - 23:00',
+      //                       wrap: true,
+      //                       color: '#666666',
+      //                       size: 'sm',
+      //                       flex: 5
+      //                     }
+      //                   ]
+      //                 }
+      //               ]
+      //             }
+      //           ]
+      //         },
+      //         footer: {
+      //           type: 'box',
+      //           layout: 'vertical',
+      //           spacing: 'sm',
+      //           contents: [
+      //             {
+      //               type: 'button',
+      //               style: 'link',
+      //               height: 'sm',
+      //               action: {
+      //                 type: 'uri',
+      //                 label: 'CALL',
+      //                 uri: 'https://linecorp.com'
+      //               }
+      //             },
+      //             {
+      //               type: 'button',
+      //               style: 'link',
+      //               height: 'sm',
+      //               action: {
+      //                 type: 'uri',
+      //                 label: 'WEBSITE',
+      //                 uri: 'https://linecorp.com'
+      //               }
+      //             },
+      //             {
+      //               type: 'spacer',
+      //               size: 'sm'
+      //             }
+      //           ],
+      //           flex: 0
+      //         }
+      //       }
+      //     ]
+      //   }
+      // }
+    }
+    // console.log(str)
   } catch (error) {
     console.log(error)
     event.reply('發生錯誤')
