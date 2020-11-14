@@ -60,17 +60,28 @@ bot.on('message', async event => {
           let title = ''
           let location = ''
           let time = ''
+          let price = ''
+          let timestart = ''
+          let web = ''
           let info = []
+          // int r = 0;
+          // let a = []
+          // r = (int)(Math.random() * 9);
+          // let b = Math.round(Math.random() * 9)
           for (const dd of exhibitions) {
             if (!dd.showInfo[0]) return
-            if (dd.showInfo[0].location.includes(text)) {
+            if (dd.showInfo[0].location.includes(text) || dd.title.includes(text)) {
               // reply2.push()
               // if (info.length > 9) return
-              title = dd.title
+              title = dd.title + '。'
               location = dd.showInfo[0].locationName + '。'
-              time = '結束時間:' + dd.showInfo[0].endTime + '。'
+              time = dd.showInfo[0].endTime + '-'
+              price = dd.showInfo[0].price + '$'
+              timestart = dd.showInfo[0].time + '-'
+              web = dd.webSales + '。'
               if (info.length < 9) {
-                info.push({ title: title, location: location, time: time })
+                // a.push(b)
+                info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
               }
               // console.log(info.length)
               // 改過要測試
@@ -93,7 +104,7 @@ bot.on('message', async event => {
                       type: 'image',
                       url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png',
                       size: 'full',
-                      aspectRatio: '20:13',
+                      aspectRatio: '20:10',
                       aspectMode: 'cover',
                       action: {
                         type: 'uri',
@@ -103,52 +114,13 @@ bot.on('message', async event => {
                     body: {
                       type: 'box',
                       layout: 'vertical',
+                      spacing: 'md',
                       contents: [
                         {
                           type: 'text',
                           text: info[0].title,
                           weight: 'bold',
                           size: 'xl'
-                        },
-                        {
-                          type: 'box',
-                          layout: 'baseline',
-                          margin: 'md',
-                          contents: [
-                            {
-                              type: 'icon',
-                              size: 'sm',
-                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                            },
-                            {
-                              type: 'icon',
-                              size: 'sm',
-                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                            },
-                            {
-                              type: 'icon',
-                              size: 'sm',
-                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                            },
-                            {
-                              type: 'icon',
-                              size: 'sm',
-                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-                            },
-                            {
-                              type: 'icon',
-                              size: 'sm',
-                              url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png'
-                            },
-                            {
-                              type: 'text',
-                              text: '4.0',
-                              size: 'sm',
-                              color: '#999999',
-                              margin: 'md',
-                              flex: 0
-                            }
-                          ]
                         },
                         {
                           type: 'box',
@@ -163,7 +135,8 @@ bot.on('message', async event => {
                               contents: [
                                 {
                                   type: 'text',
-                                  text: 'Place',
+                                  text: '地點',
+                                  weight: 'bold',
                                   color: '#aaaaaa',
                                   size: 'sm',
                                   flex: 1
@@ -185,14 +158,63 @@ bot.on('message', async event => {
                               contents: [
                                 {
                                   type: 'text',
-                                  text: 'Time',
+                                  text: '開始',
                                   color: '#aaaaaa',
                                   size: 'sm',
                                   flex: 1
                                 },
                                 {
                                   type: 'text',
-                                  text: '10:00 - 23:00',
+                                  text: info[0].timestart,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '結束',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[0].time,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: 'price',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'icon',
+                                  url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[0].price,
                                   wrap: true,
                                   color: '#666666',
                                   size: 'sm',
@@ -207,28 +229,20 @@ bot.on('message', async event => {
                     footer: {
                       type: 'box',
                       layout: 'vertical',
-                      spacing: 'sm',
                       contents: [
                         {
                           type: 'button',
-                          style: 'link',
+                          style: 'primary',
                           height: 'sm',
+                          color: '#905c44',
                           action: {
+
                             type: 'uri',
-                            label: 'CALL',
-                            uri: 'https://linecorp.com'
+                            label: '點我看更多!',
+                            uri: info[0].web
                           }
                         },
-                        {
-                          type: 'button',
-                          style: 'link',
-                          height: 'sm',
-                          action: {
-                            type: 'uri',
-                            label: 'WEBSITE',
-                            uri: 'https://linecorp.com'
-                          }
-                        },
+
                         {
                           type: 'spacer',
                           size: 'sm'
