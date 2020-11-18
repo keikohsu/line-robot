@@ -21,19 +21,6 @@ const bot = linebot({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
 })
 
-// 宣告filter 函式
-// const filter = (str, data) => {
-//   const result = [] // result 儲存filter 的東西
-//   for (const d of data) { // for of 跑API.data 的json 資料
-//     if (d.TR_POSITION == null) continue // 空值要跳過，不然程式會抓不到；若if () 後面只有一行，可不用加大括號 {}
-//     else if (d.TR_POSITION.includes(str)) {
-//       result.push(d) // 篩出position 包含str 的資料，整包json push 到result 陣列
-//     } else if (d.TR_CNAME.includes(str)) {
-//       result.push(d)
-//     }
-//   } return result
-// }
-
 // 使用者
 
 let num = 0
@@ -56,7 +43,7 @@ bot.on('message', async event => {
         try {
           const response = await axios.get(`https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=${num}`)
           exhibitions = response.data
-          // 展覽名稱
+          // 資料名稱
           let title = ''
           let location = ''
           let time = ''
@@ -78,13 +65,21 @@ bot.on('message', async event => {
               time = dd.showInfo[0].endTime + '-'
               price = dd.showInfo[0].price + '$'
               timestart = dd.showInfo[0].time + '-'
-              web = dd.webSales + '。'
+              // web = web ? dd.webSales : 'https://example.com'
+              if (web) {
+                web = dd.webSales
+              } else {
+                // encodeURI因為不接收中文字所以要寫數值轉檔
+                web = encodeURI(`https://www.google.com/search?q=${title}`)
+              }
               if (info.length < 9) {
-                // a.push(b)
                 info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
               }
+              // else if (dd.webSales.includes(text))
+              // else if (dd.webSales)
               // console.log(info.length)
               // 改過要測試
+              // if (dd.webSales === '') return
             }
           }
           console.log(info[0])
@@ -264,180 +259,8 @@ bot.on('message', async event => {
         }
       }
       updateData(event)
-
-      // const flex = {
-      //   type: 'flex',
-      //   altText: `查詢 ${event} 的結果`,
-      //   contents: {
-      //     type: 'carousel',
-      //     contents: []
-      //   }
-      // }
-      // flex.contents.contents.push({
-      //   title: exhibitions.showInfo[0].title
-      // time: exhibitions.showInfo[0].time,
-      // endTime: exhibitions.showInfo[0].endTime
-      // })
-      // reply = {
-      //   type: 'flex',
-      //   altText: 'Flex',
-      //   contents: {
-      //     type: 'carousel',
-      //     contents: [
-      //       {
-      //         type: 'bubble',
-      //         hero: {
-      //           type: 'image',
-      //           url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png',
-      //           size: 'full',
-      //           aspectRatio: '20:13',
-      //           aspectMode: 'cover',
-      //           action: {
-      //             type: 'uri',
-      //             uri: 'http://linecorp.com/'
-      //           }
-      //         },
-      //         body: {
-      //           type: 'box',
-      //           layout: 'vertical',
-      //           contents: [
-      //             {
-      //               type: 'text',
-      //               text: 'Brown Cafe',
-      //               weight: 'bold',
-      //               size: 'xl'
-      //             },
-      //             {
-      //               type: 'box',
-      //               layout: 'baseline',
-      //               margin: 'md',
-      //               contents: [
-      //                 {
-      //                   type: 'icon',
-      //                   size: 'sm',
-      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-      //                 },
-      //                 {
-      //                   type: 'icon',
-      //                   size: 'sm',
-      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-      //                 },
-      //                 {
-      //                   type: 'icon',
-      //                   size: 'sm',
-      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-      //                 },
-      //                 {
-      //                   type: 'icon',
-      //                   size: 'sm',
-      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gold_star_28.png'
-      //                 },
-      //                 {
-      //                   type: 'icon',
-      //                   size: 'sm',
-      //                   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/review_gray_star_28.png'
-      //                 },
-      //                 {
-      //                   type: 'text',
-      //                   text: '4.0',
-      //                   size: 'sm',
-      //                   color: '#999999',
-      //                   margin: 'md',
-      //                   flex: 0
-      //                 }
-      //               ]
-      //             },
-      //             {
-      //               type: 'box',
-      //               layout: 'vertical',
-      //               margin: 'lg',
-      //               spacing: 'sm',
-      //               contents: [
-      //                 {
-      //                   type: 'box',
-      //                   layout: 'baseline',
-      //                   spacing: 'sm',
-      //                   contents: [
-      //                     {
-      //                       type: 'text',
-      //                       text: 'Place',
-      //                       color: '#aaaaaa',
-      //                       size: 'sm',
-      //                       flex: 1
-      //                     },
-      //                     {
-      //                       type: 'text',
-      //                       text: 'Miraina Tower, 4-1-6 Shinjuku, Tokyo',
-      //                       wrap: true,
-      //                       color: '#666666',
-      //                       size: 'sm',
-      //                       flex: 5
-      //                     }
-      //                   ]
-      //                 },
-      //                 {
-      //                   type: 'box',
-      //                   layout: 'baseline',
-      //                   spacing: 'sm',
-      //                   contents: [
-      //                     {
-      //                       type: 'text',
-      //                       text: 'Time',
-      //                       color: '#aaaaaa',
-      //                       size: 'sm',
-      //                       flex: 1
-      //                     },
-      //                     {
-      //                       type: 'text',
-      //                       text: '10:00 - 23:00',
-      //                       wrap: true,
-      //                       color: '#666666',
-      //                       size: 'sm',
-      //                       flex: 5
-      //                     }
-      //                   ]
-      //                 }
-      //               ]
-      //             }
-      //           ]
-      //         },
-      //         footer: {
-      //           type: 'box',
-      //           layout: 'vertical',
-      //           spacing: 'sm',
-      //           contents: [
-      //             {
-      //               type: 'button',
-      //               style: 'link',
-      //               height: 'sm',
-      //               action: {
-      //                 type: 'uri',
-      //                 label: 'CALL',
-      //                 uri: 'https://linecorp.com'
-      //               }
-      //             },
-      //             {
-      //               type: 'button',
-      //               style: 'link',
-      //               height: 'sm',
-      //               action: {
-      //                 type: 'uri',
-      //                 label: 'WEBSITE',
-      //                 uri: 'https://linecorp.com'
-      //               }
-      //             },
-      //             {
-      //               type: 'spacer',
-      //               size: 'sm'
-      //             }
-      //           ],
-      //           flex: 0
-      //         }
-      //       }
-      //     ]
-      //   }
-      // }
     }
+
     // console.log(str)
   } catch (error) {
     console.log(error)
