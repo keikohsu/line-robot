@@ -51,10 +51,7 @@ bot.on('message', async event => {
           let timestart = ''
           let web = ''
           let info = []
-          // int r = 0;
-          // let a = []
-          // r = (int)(Math.random() * 9);
-          // let b = Math.round(Math.random() * 9)
+
           for (const dd of exhibitions) {
             if (!dd.showInfo[0]) return
             if (dd.showInfo[0].location.includes(text) || dd.title.includes(text)) {
@@ -65,21 +62,24 @@ bot.on('message', async event => {
               time = dd.showInfo[0].endTime + '-'
               price = dd.showInfo[0].price + '$'
               timestart = dd.showInfo[0].time + '-'
+              web = dd.webSales
+              // 兩種方式
+              // 第一種(簡寫)
               // web = web ? dd.webSales : 'https://example.com'
+              // 第二種
               if (web) {
                 web = dd.webSales
               } else {
                 // encodeURI因為不接收中文字所以要寫數值轉檔
                 web = encodeURI(`https://www.google.com/search?q=${title}`)
               }
-              if (info.length < 9) {
+              if (info.length >= 5) {
+                info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
+              } else if (info.length <= 9) {
                 info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
               }
-              // else if (dd.webSales.includes(text))
-              // else if (dd.webSales)
-              // console.log(info.length)
-              // 改過要測試
-              // if (dd.webSales === '') return
+
+              console.log(info.length)
             }
           }
           console.log(info[0])
@@ -97,7 +97,7 @@ bot.on('message', async event => {
                     type: 'bubble',
                     hero: {
                       type: 'image',
-                      url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png',
+                      url: 'https://i.imgur.com/M92kStn.png',
                       size: 'full',
                       aspectRatio: '20:10',
                       aspectMode: 'cover',
@@ -154,6 +154,7 @@ bot.on('message', async event => {
                                 {
                                   type: 'text',
                                   text: '開始',
+                                  weight: 'bold',
                                   color: '#aaaaaa',
                                   size: 'sm',
                                   flex: 1
@@ -176,6 +177,7 @@ bot.on('message', async event => {
                                 {
                                   type: 'text',
                                   text: '結束',
+                                  weight: 'bold',
                                   color: '#aaaaaa',
                                   size: 'sm',
                                   flex: 1
@@ -199,14 +201,15 @@ bot.on('message', async event => {
                                 {
                                   type: 'text',
                                   text: 'price',
+                                  weight: 'bold',
                                   color: '#aaaaaa',
                                   size: 'sm',
                                   flex: 1
                                 },
-                                {
-                                  type: 'icon',
-                                  url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
-                                },
+                                // {
+                                //   type: 'icon',
+                                //   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
+                                // },
                                 {
                                   type: 'text',
                                   text: info[0].price,
@@ -229,12 +232,324 @@ bot.on('message', async event => {
                           type: 'button',
                           style: 'primary',
                           height: 'sm',
-                          color: '#905c44',
+                          color: '#95CACA',
                           action: {
 
                             type: 'uri',
                             label: '點我看更多!',
                             uri: info[0].web
+                          }
+                        },
+
+                        {
+                          type: 'spacer',
+                          size: 'sm'
+                        }
+                      ],
+                      flex: 0
+                    }
+                  },
+                  {
+                    type: 'bubble',
+                    hero: {
+                      type: 'image',
+                      url: 'https://i.imgur.com/M92kStn.png',
+                      size: 'full',
+                      aspectRatio: '20:10',
+                      aspectMode: 'cover',
+                      action: {
+                        type: 'uri',
+                        uri: 'http://linecorp.com/'
+                      }
+                    },
+                    body: {
+                      type: 'box',
+                      layout: 'vertical',
+                      spacing: 'md',
+                      contents: [
+                        {
+                          type: 'text',
+                          text: info[1].title,
+                          weight: 'bold',
+                          size: 'xl'
+                        },
+                        {
+                          type: 'box',
+                          layout: 'vertical',
+                          margin: 'lg',
+                          spacing: 'sm',
+                          contents: [
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '地點',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[1].location,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '開始',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[1].timestart,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '結束',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[1].time,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: 'price',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                // {
+                                //   type: 'icon',
+                                //   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
+                                // },
+                                {
+                                  type: 'text',
+                                  text: info[1].price,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    footer: {
+                      type: 'box',
+                      layout: 'vertical',
+                      contents: [
+                        {
+                          type: 'button',
+                          style: 'primary',
+                          height: 'sm',
+                          color: '#95CACA',
+                          action: {
+
+                            type: 'uri',
+                            label: '點我看更多!',
+                            uri: info[1].web
+                          }
+                        },
+
+                        {
+                          type: 'spacer',
+                          size: 'sm'
+                        }
+                      ],
+                      flex: 0
+                    }
+                  },
+                  {
+                    type: 'bubble',
+                    hero: {
+                      type: 'image',
+                      url: 'https://i.imgur.com/M92kStn.png',
+                      size: 'full',
+                      aspectRatio: '20:10',
+                      aspectMode: 'cover',
+                      action: {
+                        type: 'uri',
+                        uri: 'http://linecorp.com/'
+                      }
+                    },
+                    body: {
+                      type: 'box',
+                      layout: 'vertical',
+                      spacing: 'md',
+                      contents: [
+                        {
+                          type: 'text',
+                          text: info[2].title,
+                          weight: 'bold',
+                          size: 'xl'
+                        },
+                        {
+                          type: 'box',
+                          layout: 'vertical',
+                          margin: 'lg',
+                          spacing: 'sm',
+                          contents: [
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '地點',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[2].location,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '開始',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[2].timestart,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: '結束',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                {
+                                  type: 'text',
+                                  text: info[2].time,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            },
+
+                            {
+                              type: 'box',
+                              layout: 'baseline',
+                              spacing: 'sm',
+                              contents: [
+                                {
+                                  type: 'text',
+                                  text: 'price',
+                                  weight: 'bold',
+                                  color: '#aaaaaa',
+                                  size: 'sm',
+                                  flex: 1
+                                },
+                                // {
+                                //   type: 'icon',
+                                //   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
+                                // },
+                                {
+                                  type: 'text',
+                                  text: info[2].price,
+                                  wrap: true,
+                                  color: '#666666',
+                                  size: 'sm',
+                                  flex: 5
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    footer: {
+                      type: 'box',
+                      layout: 'vertical',
+                      contents: [
+                        {
+                          type: 'button',
+                          style: 'primary',
+                          height: 'sm',
+                          color: '#95CACA',
+                          action: {
+
+                            type: 'uri',
+                            label: '點我看更多!',
+                            uri: info[2].web
                           }
                         },
 
@@ -254,13 +569,13 @@ bot.on('message', async event => {
           console.log(reply)
           event.reply(reply)
         }
+
         catch (error) {
           console.log(error)
         }
       }
       updateData(event)
     }
-
     // console.log(str)
   } catch (error) {
     console.log(error)
