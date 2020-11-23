@@ -24,21 +24,27 @@ const bot = linebot({
 // 使用者
 
 let num = 0
+// 訊息事件
 bot.on('message', async event => {
-  // const reply2 = []
   try {
     let exhibitions = []
     let reply
     // let str = ''
     const text = event.message.text
+    if (text === '找類別') {
+      event.reply('請輸入搜尋特定編號:\n' + '🎼  音樂:  1 \n' + '🎭  戲劇:  2 \n' + '💃  舞蹈:  3 \n' + '👩‍👦  親子:  4\n' + '🎧  獨立音樂: 5 \n' +
+        '👁  展覽:  6 \n' + '👨‍🏫  講座:  7 \n' + '🎬  電影:  8 \n' + '🧛  綜藝:  11 \n' + '⛳  競賽:  13 \n' + '🏆  徵選:  14 \n' + ' ❓  其他:  15 \n' + '🎤  演唱會:  17 \n' + '📖  研習課程:  19\n')
+    } else if (text === '給選單') {
+      reply = await quickReply
+      event.reply(reply)
+    }
     if (text === '1' || text === '2' || text === '3' || text === '4' || text === '5' || text === '6' || text === '7' || text === '8' || text === '11' || text === '13' || text === '14' || text === '15' || text === '17' || text === '19') {
       num = text
       reply = '請輸入城市'
       event.reply(reply)
       console.log(num)
       console.log(text)
-    }
-    else {
+    } else {
       const updateData = async (event) => {
         try {
           const response = await axios.get(`https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=${num}`)
@@ -51,7 +57,6 @@ bot.on('message', async event => {
           let timestart = ''
           let web = ''
           let info = []
-
           for (const dd of exhibitions) {
             if (!dd.showInfo[0]) return
             if (dd.showInfo[0].location.includes(text) || dd.title.includes(text)) {
@@ -73,18 +78,20 @@ bot.on('message', async event => {
                 // encodeURI因為不接收中文字所以要寫數值轉檔
                 web = encodeURI(`https://www.google.com/search?q=${title}`)
               }
-              if (info.length >= 5) {
-                info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
-              } else if (info.length <= 9) {
+              if (info.length <= 9) {
                 info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
               }
+              // else if (info.length <= 9) {
+              //   info.push({ title: title, location: location, time: time, price: price, timestart: timestart, web: web })
+              // }
 
               console.log(info.length)
             }
           }
           console.log(info[0])
+          // for (let i = 0; i < info.length; i++){}
           if (info.length === 0) {
-            reply = '找不到資料'
+            reply = '查無資料，請輸入正確號碼與縣市\n' + '輸入"臺北"不是台北呦'
           } else {
             reply = {
               type: 'flex',
@@ -97,7 +104,7 @@ bot.on('message', async event => {
                     type: 'bubble',
                     hero: {
                       type: 'image',
-                      url: 'https://i.imgur.com/M92kStn.png',
+                      url: 'https://i.imgur.com/HdtOodM.jpg',
                       size: 'full',
                       aspectRatio: '20:10',
                       aspectMode: 'cover',
@@ -253,7 +260,7 @@ bot.on('message', async event => {
                     type: 'bubble',
                     hero: {
                       type: 'image',
-                      url: 'https://i.imgur.com/M92kStn.png',
+                      url: 'https://i.imgur.com/HdtOodM.jpg',
                       size: 'full',
                       aspectRatio: '20:10',
                       aspectMode: 'cover',
@@ -409,7 +416,7 @@ bot.on('message', async event => {
                     type: 'bubble',
                     hero: {
                       type: 'image',
-                      url: 'https://i.imgur.com/M92kStn.png',
+                      url: 'https://i.imgur.com/HdtOodM.jpg',
                       size: 'full',
                       aspectRatio: '20:10',
                       aspectMode: 'cover',
@@ -569,7 +576,6 @@ bot.on('message', async event => {
           console.log(reply)
           event.reply(reply)
         }
-
         catch (error) {
           console.log(error)
         }
@@ -579,8 +585,132 @@ bot.on('message', async event => {
     // console.log(str)
   } catch (error) {
     console.log(error)
-    event.reply('發生錯誤')
+    event.reply('發生錯誤，請稍後再試')
   }
+})
+
+const quickReply = {
+  type: 'text',
+  text: '想看什麼展覽?',
+  quickReply: {
+    items: [
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '音樂',
+          data: '1'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '戲劇',
+          data: '2'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '舞蹈',
+          data: '3'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '親子',
+          data: '4'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '獨立音樂',
+          data: '5'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '展覽',
+          data: '6'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '講座',
+          data: '7'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '電影',
+          data: '8'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '綜藝',
+          data: '11'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '競賽',
+          data: '13'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '徵選',
+          data: '14'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '演唱會',
+          data: '17'
+        }
+      },
+      {
+        type: 'action',
+        action: {
+          type: 'postback',
+          label: '研習課程',
+          data: '19'
+        }
+      }
+    ]
+  }
+}
+// console.log(quickReply)
+bot.on('postback', async event => {
+  const data = event.postback.data
+  if (data !== '') {
+    const result = await exhibitions(data)
+    event.reply(result)
+  }
+  // if (genreID !== '') {
+  //   event.reply(genrePick(genreID))
+  // }
 })
 
 bot.listen('/', process.env.PORT, () => {
