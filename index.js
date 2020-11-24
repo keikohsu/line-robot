@@ -34,12 +34,13 @@ bot.on('message', async event => {
     if (text === '找類別') {
       event.reply('請輸入搜尋特定編號:\n' + '🎼  音樂:  1 \n' + '🎭  戲劇:  2 \n' + '💃  舞蹈:  3 \n' + '👩‍👦  親子:  4\n' + '🎧  獨立音樂: 5 \n' +
         '👁  展覽:  6 \n' + '👨‍🏫  講座:  7 \n' + '🎬  電影:  8 \n' + '🧛  綜藝:  11 \n' + '⛳  競賽:  13 \n' + '🏆  徵選:  14 \n' + ' ❓  其他:  15 \n' + '🎤  演唱會:  17 \n' + '📖  研習課程:  19\n')
-    } else if (text === '給選單') {
+    } else if (text === '查詢名稱選單編號') {
       reply = await quickReply
       event.reply(reply)
     }
     if (text === '1' || text === '2' || text === '3' || text === '4' || text === '5' || text === '6' || text === '7' || text === '8' || text === '11' || text === '13' || text === '14' || text === '15' || text === '17' || text === '19') {
       num = text
+
       reply = '請輸入城市'
       event.reply(reply)
       console.log(num)
@@ -591,7 +592,7 @@ bot.on('message', async event => {
 
 const quickReply = {
   type: 'text',
-  text: '想看什麼展覽?',
+  text: '想看什麼藝文活動編碼?\n' + '選完後需再輸入一次編號',
   quickReply: {
     items: [
       {
@@ -701,16 +702,14 @@ const quickReply = {
     ]
   }
 }
+
 // console.log(quickReply)
 bot.on('postback', async event => {
   const data = event.postback.data
-  if (data !== '') {
-    const result = await exhibitions(data)
-    event.reply(result)
+  if (data === '1' || data === '2' || data === '3' || data === '4' || data === '5' || data === '6' || data === '7' || data === '8' || data === '11' || data === '13' || data === '14' || data === '17' || data === '19') {
+    console.log(data)
+    event.reply(data)
   }
-  // if (genreID !== '') {
-  //   event.reply(genrePick(genreID))
-  // }
 })
 
 bot.listen('/', process.env.PORT, () => {
