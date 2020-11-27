@@ -34,14 +34,14 @@ bot.on('message', async event => {
     if (text === '找類別') {
       event.reply('請輸入搜尋特定編號:\n' + '🎼  音樂:  1 \n' + '🎭  戲劇:  2 \n' + '💃  舞蹈:  3 \n' + '👩‍👦  親子:  4\n' + '🎧  獨立音樂: 5 \n' +
         '👁  展覽:  6 \n' + '👨‍🏫  講座:  7 \n' + '🎬  電影:  8 \n' + '🧛  綜藝:  11 \n' + '⛳  競賽:  13 \n' + '🏆  徵選:  14 \n' + ' ❓  其他:  15 \n' + '🎤  演唱會:  17 \n' + '📖  研習課程:  19\n')
-    } else if (text === '對什麼類別有興趣呢?') {
+    } else if (text === '今天想裝文青🤓') {
       reply = await quickReply
       event.reply(reply)
     }
     if (text === '1' || text === '2' || text === '3' || text === '4' || text === '5' || text === '6' || text === '7' || text === '8' || text === '11' || text === '13' || text === '14' || text === '15' || text === '17' || text === '19') {
       num = text
-      reply = '請輸入城市\n' + '例如: 臺北、臺中'
       reply = await quickCity
+
       event.reply(reply)
       console.log(num)
       console.log(text)
@@ -568,6 +568,318 @@ bot.on('message', async event => {
                         ],
                         flex: 0
                       }
+                    },
+                    {
+                      type: 'bubble',
+                      hero: {
+                        type: 'image',
+                        url: 'https://i.imgur.com/HdtOodM.jpg',
+                        size: 'full',
+                        aspectRatio: '20:10',
+                        aspectMode: 'cover',
+                        action: {
+                          type: 'uri',
+                          uri: 'http://linecorp.com/'
+                        }
+                      },
+                      body: {
+                        type: 'box',
+                        layout: 'vertical',
+                        spacing: 'md',
+                        contents: [
+                          {
+                            type: 'text',
+                            text: info[3].title,
+                            weight: 'bold',
+                            size: 'xl'
+                          },
+                          {
+                            type: 'box',
+                            layout: 'vertical',
+                            margin: 'lg',
+                            spacing: 'sm',
+                            contents: [
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: '地點',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  {
+                                    type: 'text',
+                                    text: info[3].location,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              },
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: '開始',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  {
+                                    type: 'text',
+                                    text: info[3].timestart,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              },
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: '結束',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  {
+                                    type: 'text',
+                                    text: info[3].time,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              },
+
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: 'price',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  // {
+                                  //   type: 'icon',
+                                  //   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
+                                  // },
+                                  {
+                                    type: 'text',
+                                    text: info[3].price,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      footer: {
+                        type: 'box',
+                        layout: 'vertical',
+                        contents: [
+                          {
+                            type: 'button',
+                            style: 'primary',
+                            height: 'sm',
+                            color: '#95CACA',
+                            action: {
+
+                              type: 'uri',
+                              label: '點我看更多!',
+                              uri: info[3].web
+                            }
+                          },
+
+                          {
+                            type: 'spacer',
+                            size: 'sm'
+                          }
+                        ],
+                        flex: 0
+                      }
+                    },
+                    {
+                      type: 'bubble',
+                      hero: {
+                        type: 'image',
+                        url: 'https://i.imgur.com/HdtOodM.jpg',
+                        size: 'full',
+                        aspectRatio: '20:10',
+                        aspectMode: 'cover',
+                        action: {
+                          type: 'uri',
+                          uri: 'http://linecorp.com/'
+                        }
+                      },
+                      body: {
+                        type: 'box',
+                        layout: 'vertical',
+                        spacing: 'md',
+                        contents: [
+                          {
+                            type: 'text',
+                            text: info[4].title,
+                            weight: 'bold',
+                            size: 'xl'
+                          },
+                          {
+                            type: 'box',
+                            layout: 'vertical',
+                            margin: 'lg',
+                            spacing: 'sm',
+                            contents: [
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: '地點',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  {
+                                    type: 'text',
+                                    text: info[4].location,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              },
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: '開始',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  {
+                                    type: 'text',
+                                    text: info[4].timestart,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              },
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: '結束',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  {
+                                    type: 'text',
+                                    text: info[4].time,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              },
+
+                              {
+                                type: 'box',
+                                layout: 'baseline',
+                                spacing: 'sm',
+                                contents: [
+                                  {
+                                    type: 'text',
+                                    text: 'price',
+                                    weight: 'bold',
+                                    color: '#aaaaaa',
+                                    size: 'sm',
+                                    flex: 1
+                                  },
+                                  // {
+                                  //   type: 'icon',
+                                  //   url: 'https://scdn.line-apps.com/n/channel_devcenter/img/fx/restaurant_large_32.png'
+                                  // },
+                                  {
+                                    type: 'text',
+                                    text: info[4].price,
+                                    wrap: true,
+                                    color: '#666666',
+                                    size: 'sm',
+                                    flex: 5
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      footer: {
+                        type: 'box',
+                        layout: 'vertical',
+                        contents: [
+                          {
+                            type: 'button',
+                            style: 'primary',
+                            height: 'sm',
+                            color: '#95CACA',
+                            action: {
+
+                              type: 'uri',
+                              label: '點我看更多!',
+                              uri: info[3].web
+                            }
+                          },
+
+                          {
+                            type: 'spacer',
+                            size: 'sm'
+                          }
+                        ],
+                        flex: 0
+                      }
                     }
                   ]
                 }
@@ -594,7 +906,7 @@ bot.on('message', async event => {
 // 放大鏡小選單
 const quickReply = {
   type: 'text',
-  text: '想看什麼藝文活動編碼?\n' + '選完後需再輸入一次編號',
+  text: '請選擇喜歡的藝文活動項目吧🥰',
   quickReply: {
     items: [
       {
@@ -707,7 +1019,7 @@ const quickReply = {
 
 const quickCity = {
   type: 'text',
-  text: '請輸入城市\n' + '例如: 臺北、臺中',
+  text: '請輸入縣市\n' + '例如: 臺北、臺中',
   quickCity: {
     items: [
       {
